@@ -35,8 +35,37 @@ class Autonoleggio:
             Funzione che legge tutte le automobili nel database
             :return: una lista con tutte le automobili presenti oppure None
         """
-
         # TODO
+
+        cnx = get_connection()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """SELECT codice, marca, modello, anno, posti, disponibile 
+                   FROM automobile"""
+        cursor.execute(query)
+
+        risultati = cursor.fetchall()
+        lista_auto = []
+
+        for row in risultati:
+            auto = Automobile(
+                row["codice"],
+                row["marca"],
+                row["modello"],
+                row["anno"],
+                row["posti"],
+                bool(row["disponibile"])
+            )
+            lista_auto.append(auto)
+
+        cursor.close()
+        cnx.close()
+
+        if not lista_auto:
+            return None
+        return lista_auto
+
+
 
     def cerca_automobili_per_modello(self, modello) -> list[Automobile] | None:
         """
@@ -45,3 +74,35 @@ class Autonoleggio:
             :return: una lista con tutte le automobili di marca e modello indicato oppure None
         """
         # TODO
+
+        cnx = get_connection()
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """SELECT codice, marca, modello, anno, posti, disponibile 
+                   FROM automobile 
+                   WHERE modello = %s"""
+        cursor.execute(query, (modello,))
+
+        risultati = cursor.fetchall()
+        lista_auto = []
+
+        for row in risultati:
+            auto = Automobile(
+                row["codice"],
+                row["marca"],
+                row["modello"],
+                row["anno"],
+                row["posti"],
+                bool(row["disponibile"])
+            )
+            lista_auto.append(auto)
+
+        cursor.close()
+        cnx.close()
+
+        if not lista_auto:
+            return None
+        return lista_auto
+
+
+
